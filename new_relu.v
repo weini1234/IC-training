@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 module acc_bias_relu(
     input i_add4_end,               // 输入，用于指示计算结束
     input clk,                     // 输入，时钟信号

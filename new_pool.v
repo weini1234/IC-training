@@ -93,6 +93,10 @@ integer k;
 integer m;
 integer n;
 integer a;
+integer b;
+integer c;
+integer d;
+integer e;
 
 always@(posedge clk)
 begin
@@ -117,7 +121,7 @@ begin
                 // 处理输入数据并判断是否需要池化
                 for (j = 0; j < 32; j = j + 1)
                 begin
-                    pool_temp[j] <= data_in_ff2[8 * (j + 1) - 1:8 * j];
+                    pool_temp[j] <= data_in_ff2[8 * j+:8];
                 end
                 if (col_num < col - 1)
                 begin
@@ -177,8 +181,14 @@ begin
     if (!rst_n)
     begin
         // 复位时，重置相关寄存器
-        pool1 <= 0;
-        pool2 <= 0;
+        for (b = 0; b < 16; b = b + 1)
+        begin
+            pool1[b] <= 0;
+        end
+        for (c = 0; c < 16; c = c + 1)
+        begin
+            pool2[c] <= 0;
+        end
         pool_result <= 0;
         pool_result_valid <= 0;
         pool_ff1 <= 0;
@@ -213,11 +223,11 @@ begin
             begin
                 if (pool1[a] < pool2[a])
                 begin
-                    pool_result[8 * (a + 1) - 1:8 * a] = pool2[a];
+                    pool_result[8 * a+:8] = pool2[a];
                 end
                 else
                 begin
-                    pool_result[8 * (a + 1) - 1:8 * a] = pool1[a];
+                    pool_result[8 * a+:8] = pool1[a];
                 end
             end
             pool_ff1 <= pool_valid;
@@ -226,8 +236,14 @@ begin
         else
         begin
             // 如果未开始池化操作，重置相关寄存器
-            pool1 <= 0;
-            pool2 <= 0;
+            for (d = 0; d < 16; d = d + 1)
+            begin
+            pool1[d] <= 0;
+            end
+            for (e = 0; e< 16; e = e + 1)
+            begin
+            pool2[e]<= 0;
+            end
             pool_result <= 0;
             pool_result_valid <= 0;
             pool_ff1 <= 0;

@@ -6,19 +6,19 @@ module pool_module(
     input pool_en,          // 池化使能
     input layer1,           // Layer 1 标志
     input valid_in,         // 输入数据有效信号
-    input signed [8*32-1:0] data_in, // 输入数据
+    input unsigned [8*32-1:0] data_in, // 输入数据
     input [15:0] col,       // 列数
 
-    output signed [8*16-1:0] data_out, // 输出数据
+    output unsigned [8*16-1:0] data_out, // 输出数据
     output valid_out,       // 输出数据有效信号
     output pool_end         // 池化结束信号
 );
 
 // Flip-flop 块 1：处理输入数据的寄存器
 reg valid_in_ff1;            
-reg signed [8*32-1:0] data_in_ff1;
+reg unsigned [8*32-1:0] data_in_ff1;
 reg valid_in_ff2;            
-reg signed [8*32-1:0] data_in_ff2;
+reg unsigned [8*32-1:0] data_in_ff2;
 reg start;                   
 reg nopool_end;              
 
@@ -86,7 +86,7 @@ end
 // Flip-flop 块 3：处理列数和池化结果的寄存器
 reg [15:0] col_num;          
 reg pool_valid;              
-reg signed [7:0] pool_temp[0:31]; 
+reg unsigned [7:0] pool_temp[0:31]; 
 integer i;
 integer j;
 integer k;
@@ -167,9 +167,9 @@ begin
 end
 
 // Flip-flop 块 4：处理池化结果和相关信号的寄存器
-reg signed [7:0] pool1[0:15]; 
-reg signed [7:0] pool2[0:15]; 
-reg signed [8*32-1:0] pool_result;
+reg unsigned [7:0] pool1[0:15]; 
+reg unsigned [7:0] pool2[0:15]; 
+reg unsigned [8*32-1:0] pool_result;
 reg pool_result_valid;       
 reg pool_ff1;                
 reg start_regff1;            
@@ -217,17 +217,17 @@ begin
             end
             for (n = 0; n < 16; n = n + 1)
             begin
-                pool2[n] = pool1[n];
+                pool2[n] <= pool1[n];
             end
             for (a = 0; a < 16; a = a + 1)
             begin
                 if (pool1[a] < pool2[a])
                 begin
-                    pool_result[8 * a+:8] = pool2[a];
+                    pool_result[8 * a+:8] <= pool2[a];
                 end
                 else
                 begin
-                    pool_result[8 * a+:8] = pool1[a];
+                    pool_result[8 * a+:8] <= pool1[a];
                 end
             end
             pool_ff1 <= pool_valid;
